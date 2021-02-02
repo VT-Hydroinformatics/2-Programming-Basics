@@ -24,7 +24,7 @@ Data transformation (<https://r4ds.had.co.nz/transform.html>)
 If you just type numbers and operators in, R will spit out the results
 
 ```{r}
-
+7+9
 ```
 
 ## You can create new objects using \<-
@@ -46,7 +46,9 @@ You can then recall/print the values in an object by just typing the name by its
 In the code chunk below, assign a 3 to the object "y" and then print it out.
 
 ```{r}
+y <- 3
 
+y
 ```
 
 If you want to assign multiple values, you have to put them in the function c() c means combine. R doesn't know what to do if you just give it a bunch of values with space or commas, but if you put them as arguments in the combine function, it'll make them into a vector.
@@ -54,7 +56,9 @@ If you want to assign multiple values, you have to put them in the function c() 
 Any time you need to use several values, even passing as an argument to a function, you have to put them in c() or it won't work.
 
 ```{r}
+x <- c(1, 2, 3)
 
+x
 ```
 
 When you are creating objects, try to give them meaningful names so you can remember what they are. You can't have spaces or operators that mean something else as part of a name. And remember, everything is case sensitive.
@@ -62,7 +66,9 @@ When you are creating objects, try to give them meaningful names so you can reme
 Assign the value 5.4 to water_pH and then try to recall it by typing "water_ph"
 
 ```{r}
+water_ph <- 5.4
 
+water_ph
 ```
 
 You can also set objects equal to strings, or values that have letters in them. To do this you just have to put the value in quotes, otherwise R will think it is an object name and tell you it doesn't exist.
@@ -76,7 +82,7 @@ Try: name \<- "JP
 R can be cryptic with it's error messages or other responses, but once you get used to them, you know exactly what is wrong when they pop up.
 
 ```{r}
-
+name <- "JP"
 ```
 
 ## Using functions
@@ -86,7 +92,7 @@ R can be cryptic with it's error messages or other responses, but once you get u
 As an example, let's try the seq() function, which creates a sequence of numbers.
 
 ```{r}
-
+seq(10, 1, -3)
 ```
 
 ## Read in some data.
@@ -96,7 +102,9 @@ For the following demonstration we will use the RBI data from a sample of USGS g
 Important: read_csv() is the tidyverse csv reading function, the base R function is read.csv(). read.csv() will not read your data in as a tibble, which is the format used by tidyverse functions.
 
 ```{r}
+library(tidyverse)
 
+rbi <- read_csv("Flashy_Dat_Subset.csv")
 ```
 
 ## Wait, hold up. What is a tibble?
@@ -104,7 +112,7 @@ Important: read_csv() is the tidyverse csv reading function, the base R function
 Good question. It's a fancy way to store data that works well with tidyverse functions. Let's look at the rbi tibble.
 
 ```{r}
-
+rbi
 ```
 
 Now read in the same data with read.csv() which will NOT read the data as a tibble. How is it different? Output each one in the Console.
@@ -114,6 +122,12 @@ Knowing the data type for each column is super helpful for a few reasons.... let
 Types: int, dbl, fctr, char, logical
 
 ```{r}
+rbi_NT <- read.csv("Flashy_Dat_Subset.csv")
+
+rbi_NT$STANAME <- as.character(rbi_NT$STANAME)
+
+rbi_NT
+
 
 ```
 
@@ -151,7 +165,9 @@ Operators:\
 \| or
 
 ```{r}
+statesIwant <-  c("ME", "NH")
 
+filter(rbi, STATE %in% statesIwant)
 ```
 
 ### Multiple conditions
@@ -159,8 +175,10 @@ Operators:\
 How many gages are there in Maine with an rbi greater than 0.25
 
 ```{r}
+# & and
+#| or
 
-
+filter(rbi, STATE == "ME" & STATE == "NH")
 
 ```
 
@@ -172,7 +190,7 @@ Sort the rbi data by the RBI column in ascending and then descending order
 
 ```{r}
 
-
+arrange(rbi, desc(RBI))
 ```
 
 ## Select
@@ -186,6 +204,7 @@ Note they come back in the order you put them in in the function, not the order 
 You can do a lot more with select, especially when you need to select a bunch of columns but don't want to type them all out. But we don't need to cover all that today. For a taste though, if you want to select a group of columns you can specify the first and last with a colon in between (first:last) and it'll return all of them. Select the rbi columns from site_no to DRAIN_SQKM.
 
 ```{r}
+select(rbi, site_no:DRAIN_SQKM)
 
 ```
 
@@ -196,13 +215,13 @@ Use mutate to add new columns based on additional ones. Common uses are to creat
 Create a new column in rbi called T_RANGE by subtracting T_MIN_SITE from T_MAX_SITE
 
 ```{r}
-
+mutate(rbi, T_RANGE = T_MAX_SITE - T_MIN_SITE)
 ```
 
 When downloading data from the USGS through R, you have to enter the gage ID as a character, even though they are all made up of numbers. So to practice doing this, update the site_no column to be a character datatype
 
 ```{r}
-
+mutate(rbi, site_no = as.character(site_no))
 ```
 
 ## Summarize
@@ -212,13 +231,16 @@ Summarize will perform an operation on all of your data, or groups if you assign
 Use summarize to compute the mean, min, and max rbi
 
 ```{r}
+summarize(rbi, meanRBI = mean(RBI), minRBI = min(RBI), maxRBI = max(RBI))
 
 ```
 
 Now use the group function to group by state and then summarize in the same way as above
 
 ```{r}
+rbistate <- group_by(rbi, STATE)
 
+summarize(rbistate, meanRBI = mean(RBI), minRBI = min(RBI), maxRBI = max(RBI))
 ```
 
 ## Multiple operations with pipes
@@ -243,7 +265,7 @@ Efficient... but tough to read/interpret
 
 ingredients %\>%\
 pbbread() %\>%\
-jbread() %\>%\
+jbread(jelly thickness = 3) %\>%\
 joinslices()
 
 Much easier to follow!
@@ -255,7 +277,8 @@ Much easier to follow!
 Take the groupby and summarize code from above and perform the operation using the pipe
 
 ```{r}
-
+rbi %>% group_by(STATE) %>%
+summarize(meanRBI = mean(RBI), minRBI = min(RBI), maxRBI = max(RBI))
 ```
 
 ## Save your results to a new tibble
@@ -276,6 +299,9 @@ Use the assignment operator to save the summary table you just made.
 # Notice when you do this it doesn't output the result... 
 # You can see what you did by clickon in stateRBIs in your environment panel
 # or just type stateRBIs
+rbi %>% group_by(STATE) %>%
+summarize(meanRBI = mean(RBI), minRBI = min(RBI), maxRBI = max(RBI)) -> sumrbi
+
 
 ```
 
