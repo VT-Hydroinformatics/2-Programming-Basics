@@ -1,13 +1,4 @@
----
-title: "Programming basics"
-output:
-  html_document:
-    df_print: paged
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+# R Tidyverse Programming Basics {#Programming}
 
 ## Introduction
 
@@ -33,7 +24,7 @@ Yea yea, = does the same thing. But use \<-. We will call \<- assignment or assi
 
 Oh, one more thing: Surround operators with spaces. Don't code like a gorilla.
 
-x \<- 1 looks better than x\<-1 and if you disagree you are wrong.
+x \<- 1 looks better than x\<-1 and if you disagree you are wrong. :)
 
 You can assign single numbers or entire chunks of data using \<-
 
@@ -123,7 +114,7 @@ rbi <- read_csv("Flashy_Dat_Subset.csv")
 Good question. It's a fancy way to store data that works well with tidyverse functions. Let's look at the rbi tibble.
 
 ```{r echo=TRUE}
-rbi
+head(rbi)
 ```
 
 Now read in the same data with read.csv() which will NOT read the data as a tibble. How is it different? Output each one in the Console.
@@ -135,7 +126,7 @@ Types: int, dbl, fctr, char, logical
 ```{r echo=TRUE}
 rbi_NT <- read.csv("Flashy_Dat_Subset.csv")
 
-rbi_NT
+head(rbi_NT)
 ```
 
 ## Data wrangling in dplyr
@@ -144,15 +135,11 @@ If you forget syntax or what the following functions do, here is an excellent ch
 
 We will demo five functions below:
 
-### filter() - returns rows that meet specified conditions
-
-### arrange() - reorders rows
-
-### select() - pull out variables (columns)
-
-### mutate() - create new variables (columns) or reformat existing ones
-
-### summarize() - collapse groups of values into summary stats
+-   **filter()** - returns rows that meet specified conditions
+-   **arrange()** - reorders rows
+-   **select()** - pull out variables (columns)
+-   **mutate()** - create new variables (columns) or reformat existing ones
+-   **summarize()** - collapse groups of values into summary stats
 
 With all of these, the first argument is the data and then the arguments after that specify what you want the function to do.
 
@@ -200,7 +187,7 @@ arrange(rbi, desc(RBI))
 
 ## Select
 
-There are two many columns! You will often want to do this when you are manipulating the structure of your data and need to trim it down to only include what you will use.
+There are too many columns! You will often want to do this when you are manipulating the structure of your data and need to trim it down to only include what you will use.
 
 Select Site name, state, and RBI from the rbi data
 
@@ -253,24 +240,24 @@ The pipe operator %\>% allows you to perform multiple operations in a sequence w
 
 ### Let's say we want to tell R to make a PB&J sandwich by using the pbbread(), jbread(), and joinslices() functions and the data "ingredients". If we do this saving each step if would look like this:
 
-sando \<- pbbread(ingredients)
+> sando \<- pbbread(ingredients)
 
-sando \<- jbread(sando)
+> sando \<- jbread(sando)
 
-sando \<- joinslices(sando)
+> sando \<- joinslices(sando)
 
 ### If we nest the functions together we get this
 
-joinslice(jbread(pbbread(ingredients)))
+> joinslice(jbread(pbbread(ingredients)))
 
 Efficient... but tough to read/interpret
 
 ### Using the pipe it would look like this
 
-ingredients %\>%\
-pbbread() %\>%\
-jbread() %\>%\
-joinslices()
+> ingredients %\>%\
+> pbbread() %\>%\
+> jbread() %\>%\
+> joinslices()
 
 Much easier to follow!
 
