@@ -1,3 +1,10 @@
+---
+title: "Programming Basics"
+format:
+  html: 
+    self-contained: true
+---
+
 # R Tidyverse Programming Basics {#Programming}
 
 Get this document and a version with empty code chunks at the template repository on github: <https://github.com/VT-Hydroinformatics/2-Programming-Basics>
